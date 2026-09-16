@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineMatch — AI Movie Recommendation Companion</title>
+  <meta name="description" content="Conversational AI movie discovery companion. Describe your mood, get verified recommendations with streaming availability and personalized match scores.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍿</text></svg>">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="header">
+    <div class="logo-container" id="logoBtn">
+      <div class="logo-icon">🍿</div>
+      <div class="logo-text">CineMatch</div>
+      <span class="logo-badge">AI</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="chat" id="tabChat" role="tab" aria-selected="true">
+        <span>💬</span> Chat
+      </button>
+      <button class="tab-btn" data-tab="discover" id="tabDiscover" role="tab" aria-selected="false">
+        <span>🧭</span> Discover
+      </button>
+      <button class="tab-btn" data-tab="watchlist" id="tabWatchlist" role="tab" aria-selected="false">
+        <span>🔖</span> Watchlist <span class="tab-badge" id="watchlistBadge">0</span>
+      </button>
+      <button class="tab-btn" data-tab="history" id="tabHistory" role="tab" aria-selected="false">
+        <span>🕒</span> History
+      </button>
+    </nav>
+
+    <!-- Surprise Spark Action -->
+    <div>
+      <button class="spark-btn" id="sparkBtn" title="Instant surprise movie recommendation">
+        <span>✨</span> Surprise Me
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Active Preference Pills Bar (Editable Constraints) -->
+    <section class="pills-bar" id="pillsBar" aria-label="Active Movie Preference Filters">
+      <div class="pills-group">
+        <span class="pills-label">Active Filters:</span>
+        <div id="pillsChips" style="display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+          <span class="text-muted" style="font-size: 0.75rem;">Loading active session...</span>
+        </div>
+      </div>
+      <button class="edit-pills-btn" id="editPillsBtn">
+        <span>⚙️</span> Edit Filters
+      </button>
+    </section>
+
+    <!-- TAB 1: Chat Stream View -->
+    <section class="tab-content active" id="chatTab" role="tabpanel">
+      <!-- Chat Message Stream -->
+      <div class="chat-history" id="chatHistory" aria-live="polite">
+        <!-- Messages rendered dynamically -->
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Describe your mood, vibe, genre, or constraint (e.g. 'Mind-bending sci-fi under 100m on Netflix')..." autocomplete="off" />
+        <button id="sendBtn" class="send-btn" title="Send message" aria-label="Send message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 2: Discover Mood Collections View -->
+    <section class="tab-content" id="discoverTab" role="tabpanel">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-family: Outfit, sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff;">Curated Mood Collections</h2>
+        <p style="font-size: 0.85rem; color: #94a3b8;">Pick a tailored cinema atmosphere crafted by film lovers.</p>
+      </div>
+      <div class="discover-grid" id="discoverGrid">
+        <!-- Discover Mood Presets populated dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 3: Watchlist View -->
+    <section class="tab-content" id="watchlistTab" role="tabpanel">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h2 style="font-family: Outfit, sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff;">My Watchlist</h2>
+          <p style="font-size: 0.85rem; color: #94a3b8;">Saved recommendations across all your discovery sessions.</p>
+        </div>
+        <div class="watchlist-filter-bar">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="to_watch">To Watch</button>
+          <button class="filter-chip" data-filter="watched">Watched</button>
+        </div>
+      </div>
+      <div class="watchlist-grid" id="watchlistGrid">
+        <!-- Watchlist items populated dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 4: History View -->
+    <section class="tab-content" id="historyTab" role="tabpanel">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-family: Outfit, sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff;">Conversation History</h2>
+        <p style="font-size: 0.85rem; color: #94a3b8;">Resume previous movie discussions and mood recommendations.</p>
+      </div>
+      <div class="history-container" id="historyContainer">
+        <!-- History sessions populated dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Filter & Preference State Editor Modal -->
+  <div class="modal-overlay" id="pillsModal" role="dialog" aria-modal="true" aria-labelledby="pillsModalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="pillsModalTitle">Customize Active Session Filters</h3>
+        <button class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: #c084fc; text-transform: uppercase;">Mood & Vibe</label>
+        <div class="tag-select-group" id="moodTagSelects">
+          <span class="selectable-tag mood-tag-select" data-tag="mind-bending">🌀 Mind-Bending</span>
+          <span class="selectable-tag mood-tag-select" data-tag="dark comedy">🍸 Dark Comedy</span>
+          <span class="selectable-tag mood-tag-select" data-tag="wholesome">☕ Wholesome</span>
+          <span class="selectable-tag mood-tag-select" data-tag="atmospheric">🌃 Atmospheric</span>
+          <span class="selectable-tag mood-tag-select" data-tag="tense">⚡ Tense Suspense</span>
+          <span class="selectable-tag mood-tag-select" data-tag="adrenaline">🔥 Adrenaline</span>
+          <span class="selectable-tag mood-tag-select" data-tag="witty">💬 Witty / Sharp</span>
+          <span class="selectable-tag mood-tag-select" data-tag="melancholic">🌧️ Melancholic</span>
+        </div>
+
+        <label style="font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase;">Genres</label>
+        <div class="tag-select-group" id="genreTagSelects">
+          <span class="selectable-tag genre-tag-select" data-tag="Sci-Fi">Sci-Fi</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Thriller">Thriller</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Comedy">Comedy</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Drama">Drama</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Action">Action</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Horror">Horror</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Romance">Romance</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Animation">Animation</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Mystery">Mystery</span>
+          <span class="selectable-tag genre-tag-select" data-tag="Crime">Crime</span>
+        </div>
+
+        <label style="font-size: 0.8rem; font-weight: 700; color: #f472b6; text-transform: uppercase;">Streaming Platform Filter</label>
+        <div class="tag-select-group" id="platformTagSelects">
+          <span class="selectable-tag platform-tag-select" data-tag="Netflix">Netflix</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Prime Video">Prime Video</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Max">Max</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Disney+">Disney+</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Apple TV+">Apple TV+</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Hulu">Hulu</span>
+          <span class="selectable-tag platform-tag-select" data-tag="Paramount+">Paramount+</span>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+            <label style="font-size: 0.8rem; font-weight: 700; color: #fbbf24; text-transform: uppercase;">Max Runtime</label>
+            <span id="runtimeValue" style="font-size: 0.85rem; font-weight: 600; color: #fff;">Any runtime</span>
+          </div>
+          <input type="range" id="runtimeSlider" min="0" max="180" step="10" value="0" style="width: 100%; accent-color: #8b5cf6;" />
+        </div>
+
+        <button class="modal-save-btn" id="savePillsBtn">Apply Active Filters 🎯</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Movie Detail & Trailer Modal -->
+  <div class="modal-overlay" id="movieModal" role="dialog" aria-modal="true" aria-labelledby="movieModalContent">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Movie Details</h3>
+        <button class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+      <div id="movieModalContent">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="assertive"></div>
+
+  <!-- App Main Entry Point -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
