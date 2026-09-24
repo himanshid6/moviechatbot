@@ -48,7 +48,7 @@ watchlistRoutes.post('/', (req: Request, res: Response) => {
 watchlistRoutes.delete('/:id', (req: Request, res: Response) => {
   try {
     const userId = (req.query.user_id as string) || (req.headers['x-user-id'] as string);
-    const itemId = req.params.id;
+    const itemId = req.params.id as string;
 
     if (!userId) {
       return res.status(400).json({ error: 'user_id is required' });
@@ -75,7 +75,7 @@ watchlistRoutes.delete('/:id', (req: Request, res: Response) => {
 watchlistRoutes.patch('/:id', (req: Request, res: Response) => {
   try {
     const userId = req.body?.user_id || (req.headers['x-user-id'] as string);
-    const itemId = req.params.id;
+    const itemId = req.params.id as string;
     const status = req.body?.status;
 
     if (!userId || !status) {

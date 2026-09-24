@@ -47,7 +47,7 @@ sessionRoutes.get('/', (req: Request, res: Response) => {
  */
 sessionRoutes.get('/:id', (req: Request, res: Response) => {
   try {
-    const sessionId = req.params.id;
+    const sessionId = req.params.id as string;
     const session = ConversationService.getSession(sessionId);
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
@@ -63,7 +63,7 @@ sessionRoutes.get('/:id', (req: Request, res: Response) => {
  */
 sessionRoutes.delete('/:id', (req: Request, res: Response) => {
   try {
-    const sessionId = req.params.id;
+    const sessionId = req.params.id as string;
     const deleted = ConversationService.deleteSession(sessionId);
     if (!deleted) {
       return res.status(404).json({ error: 'Session not found' });
@@ -79,7 +79,7 @@ sessionRoutes.delete('/:id', (req: Request, res: Response) => {
  */
 sessionRoutes.get('/:id/messages', (req: Request, res: Response) => {
   try {
-    const sessionId = req.params.id;
+    const sessionId = req.params.id as string;
     const messages = ConversationService.getMessages(sessionId);
     return res.json({ success: true, messages });
   } catch (err: any) {
@@ -91,7 +91,7 @@ sessionRoutes.get('/:id/messages', (req: Request, res: Response) => {
  * Send user message -> standard JSON or SSE stream
  */
 sessionRoutes.post('/:id/messages', async (req: Request, res: Response) => {
-  const sessionId = req.params.id;
+  const sessionId = req.params.id as string;
   const content = req.body?.content;
   const isStream = req.query.stream === 'true' || req.headers.accept === 'text/event-stream';
 
@@ -123,7 +123,7 @@ sessionRoutes.post('/:id/messages', async (req: Request, res: Response) => {
  */
 sessionRoutes.patch('/:id/preferences', (req: Request, res: Response) => {
   try {
-    const sessionId = req.params.id;
+    const sessionId = req.params.id as string;
     const updates = req.body;
 
     const updatedState = ConversationService.updatePreferenceState(sessionId, updates);
@@ -139,7 +139,7 @@ sessionRoutes.patch('/:id/preferences', (req: Request, res: Response) => {
  */
 sessionRoutes.post('/:id/surprise', async (req: Request, res: Response) => {
   try {
-    const sessionId = req.params.id;
+    const sessionId = req.params.id as string;
     const result = await RecommendationEngine.surpriseMe(sessionId);
     return res.json({
       success: true,

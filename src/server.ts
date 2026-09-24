@@ -93,8 +93,8 @@ app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-// Start server
-if (process.env.NODE_ENV !== 'test') {
+// Start server (only in non-test and non-serverless environments)
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🎬 CineMatch Server running at http://localhost:${PORT}`);
     console.log(`✨ LLM Active: ${LLMService.isLLMAvailable() ? 'External LLM Enabled' : 'Semantic Ranker (Built-in)'}`);

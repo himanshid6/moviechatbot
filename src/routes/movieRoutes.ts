@@ -24,7 +24,7 @@ movieRoutes.get('/search', (req: Request, res: Response) => {
  */
 movieRoutes.get('/:id', (req: Request, res: Response) => {
   try {
-    const movie = MovieCatalogService.getMovieById(req.params.id);
+    const movie = MovieCatalogService.getMovieById(req.params.id as string);
     if (!movie) {
       return res.status(404).json({ error: 'Movie not found' });
     }

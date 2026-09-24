@@ -21,7 +21,7 @@ discoverRoutes.get('/moods', (_req: Request, res: Response) => {
  */
 discoverRoutes.get('/moods/:id', (req: Request, res: Response) => {
   try {
-    const preset = DiscoverService.getMoodPresetById(req.params.id);
+    const preset = DiscoverService.getMoodPresetById(req.params.id as string);
     if (!preset) {
       return res.status(404).json({ error: 'Mood preset not found' });
     }
